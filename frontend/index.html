@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Hesap Makinesi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .calculator {
+            background-color: #2c3e50;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            width: 350px;
+            padding: 20px;
+        }
+        
+        .display {
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 24px;
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        button {
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .number {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .operator {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .function {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .equals {
+            background-color: #f39c12;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .clear {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        .advanced {
+            background-color: #34495e;
+            color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: #e74c3c;
+        }
+        
+        .panel {
+            display: none;
+        }
+        
+        .panel.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .result {
+            color: white;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('basic')">Temel</button>
+            <button class="tab" onclick="switchTab('scientific')">Bilimsel</button>
+            <button class="tab" onclick="switchTab('advanced')">Gelişmiş</button>
+        </div>
+        
+        <div class="display" id="display">0</div>
+        
+        <!-- Temel Hesap Makinesi -->
+        <div class="panel active" id="basic-panel">
+            <div class="buttons">
+                <button class="clear" onclick="clearDisplay()">C</button>
+                <button class="operator" onclick="appendToDisplay('(')">(</button>
+                <button class="operator" onclick="appendToDisplay(')')">)</button>
+                <button class="operator" onclick="appendToDisplay('/')">/</button>
+                
+                <button class="number" onclick="appendToDisplay('7')">7</button>
+                <button class="number" onclick="appendToDisplay('8')">8</button>
+                <button class="number" onclick="appendToDisplay('9')">9</button>
+                <button class="operator" onclick="appendToDisplay('*')">×</button>
+                
+                <button class="number" onclick="appendToDisplay('4')">4</button>
+                <button class="number" onclick="appendToDisplay('5')">5</button>
+                <button class="number" onclick="appendToDisplay('6')">6</button>
+                <button class="operator" onclick="appendToDisplay('-')">-</button>
+                
+                <button class="number" onclick="appendToDisplay('1')">1</button>
+                <button class="number" onclick="appendToDisplay('2')">2</button>
+                <button class="number" onclick="appendToDisplay('3')">3</button>
+                <button class="operator" onclick="appendToDisplay('+')">+</button>
+                
+                <button class="number" onclick="appendToDisplay('0')">0</button>
+                <button class="number" onclick="appendToDisplay('.')">.</button>
+                <button class="equals" onclick="calculateExpression()">=</button>
+            </div>
+        </div>
+        
+        <!-- Bilimsel Hesap Makinesi -->
+        <div class="panel" id="scientific-panel">
+            <div class="buttons">
+                <button class="function" onclick="calculateFunction('sin')">sin</button>
+                <button class="function" onclick="calculateFunction('cos')">cos</button>
+                <button class="function" onclick="calculateFunction('tan')">tan</button>
+                <button class="function" onclick="calculateFunction('log')">log</button>
+                
+                <button class="function" onclick="appendToDisplay('pi')">π</button>
+                <button class="function" onclick="appendToDisplay('e')">e</button>
+                <button class="function" onclick="calculateFunction('sqrt')">√</button>
+                <button class="function" onclick="appendToDisplay('**')">^</button>
+                
+                <button class="number" onclick="appendToDisplay('7')">7</button>
+                <button class="number" onclick="appendToDisplay('8')">8</button>
+                <button class="number" onclick="appendToDisplay('9')">9</button>
+                <button class="operator" onclick="appendToDisplay('*')">×</button>
+                
+                <button class="number" onclick="appendToDisplay('4')">4</button>
+                <button class="number" onclick="appendToDisplay('5')">5</button>
+                <button class="number" onclick="appendToDisplay('6')">6</button>
+                <button class="operator" onclick="appendToDisplay('-')">-</button>
+                
+                <button class="number" onclick="appendToDisplay('1')">1</button>
+                <button class="number" onclick="appendToDisplay('2')">2</button>
+                <button class="number" onclick="appendToDisplay('3')">3</button>
+                <button class="operator" onclick="appendToDisplay('+')">+</button>
+                
+                <button class="number" onclick="appendToDisplay('0')">0</button>
+                <button class="number" onclick="appendToDisplay('.')">.</button>
+                <button class="equals" onclick="calculateExpression()">=</button>
+            </div>
+        </div>
+        
+        <!-- Gelişmiş Matematik İşlemleri -->
+        <div class="panel" id="advanced-panel">
+            <div class="input-group">
+                <label for="expression">İfade (x değişkenini kullanın):</label>
+                <input type="text" id="expression" placeholder="Örneğin: x**2 + 3*x - 5">
+            </div>
+            
+            <div class="input-group">
+                <label for="a">Alt Sınır (a):</label>
+                <input type="number" id="a" value="0">
+            </div>
+            
+            <div class="input-group">
+                <label for="b">Üst Sınır (b):</label>
+                <input type="number" id="b" value="1">
+            </div>
+            
+            <div class="buttons">
+                <button class="advanced" onclick="calculateAdvanced('integral')">İntegral Hesapla</button>
+                <button class="advanced" onclick="calculateAdvanced('derivative')">Türev Hesapla</button>
+                <button class="advanced" onclick="calculateAdvanced('limit')">Limit Hesapla</button>
+                <button class="advanced" onclick="calculateAdvanced('solve')">Denklem Çöz</button>
+            </div>
+            
+            <div class="result" id="advanced-result">
+                Sonuç burada görünecek...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDisplay = '0';
+        const display = document.getElementById('display');
+        
+        function updateDisplay() {
+            display.textContent = currentDisplay;
+        }
+        
+        function appendToDisplay(value) {
+            if (currentDisplay === '0' && value !== '.') {
+                currentDisplay = value;
+            } else {
+                currentDisplay += value;
+            }
+            updateDisplay();
+        }
+        
+        function clearDisplay() {
+            currentDisplay = '0';
+            updateDisplay();
+        }
+        
+        function calculateExpression() {
+            try {
+                // Replace symbols for proper evaluation
+                let expr = currentDisplay
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/\^/g, '**')
+                    .replace(/pi/g, 'Math.PI')
+                    .replace(/e/g, 'Math.E');
+                
+                // Evaluate the expression
+                const result = eval(expr);
+                currentDisplay = result.toString();
+                updateDisplay();
+            } catch (error) {
+                currentDisplay = 'Hata';
+                updateDisplay();
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+        
+        function calculateFunction(func) {
+            const value = parseFloat(currentDisplay);
+            let result;
+            
+            switch(func) {
+                case 'sin':
+                    result = Math.sin(value);
+                    break;
+                case 'cos':
+                    result = Math.cos(value);
+                    break;
+                case 'tan':
+                    result = Math.tan(value);
+                    break;
+                case 'log':
+                    result = Math.log(value);
+                    break;
+                case 'sqrt':
+                    result = Math.sqrt(value);
+                    break;
+                default:
+                    result = 'Hata';
+            }
+            
+            currentDisplay = result.toString();
+            updateDisplay();
+        }
+        
+        function switchTab(tabName) {
+            // Hide all panels
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab and panel
+            document.getElementById(`${tabName}-panel`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        async function calculateAdvanced(operation) {
+            const expression = document.getElementById('expression').value;
+            const a = document.getElementById('a').value;
+            const b = document.getElementById('b').value;
+            
+            try {
+                const response = await fetch('http://localhost:5000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        operation: operation,
+                        expression: expression,
+                        a: a,
+                        b: b
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById('advanced-result').textContent = `Hata: ${data.error}`;
+                } else {
+                    document.getElementById('advanced-result').textContent = `Sonuç: ${data.result}`;
+                }
+            } catch (error) {
+                document.getElementById('advanced-result').textContent = `İletişim hatası: ${error}`;
+            }
+        }
+    </script>
+</body>
+</html>
